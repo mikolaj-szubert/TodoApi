@@ -8,4 +8,4 @@ Aby uruchomić aplikację GoOnline, wykonaj następujące kroki:
 > [!NOTE]  
 > Migracje powinny zastosować się samoistnie do bazy danych.
 
-Aby przetestować aplikację należy zlokalizuj eksplorator testów w Visual Studio i uruchom testy integracyjne.
+Aby przetestować aplikację zlokalizuj eksplorator testów w Visual Studio i uruchom testy integracyjne.
