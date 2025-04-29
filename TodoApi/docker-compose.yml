@@ -1,0 +1,46 @@
+services:
+  todoapi:
+    build: 
+        context: .
+        dockerfile: TodoApi/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=todos;Username=postgres;Password=postgrespw
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: todos
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d todos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  testrunner:
+    build:
+      context: .
+      dockerfile: TodoApi.Tests/Dockerfile
+    environment:
+      - TEST_CONNECTION_STRING=Host=postgres;Database=todos_test;Username=postgres;Password=postgrespw
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./TestResults:/TestResults
+
+volumes:
+  postgres-data:
